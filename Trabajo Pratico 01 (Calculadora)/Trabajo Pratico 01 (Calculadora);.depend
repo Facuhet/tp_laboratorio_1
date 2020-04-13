@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1586728739 source:c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo pratico 01 (calculadora);\main.c
+	<stdio.h>
+	<stdlib.h>
+	"Funciones.h"
+
+1586627892 c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo pratico 01 (calculadora);\funciones.h
+
+1586625641 c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo pratico 01 (calculadora);\funciones.c
+	<stdio.h>
+	<stdlib.h>
+	"Funciones.h"
+
+1586712920 source:c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo pratico 01 (calculadora);\funciones.c
+	<stdio.h>
+	<stdlib.h>
+
