@@ -1,6 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int Menu()
+{
+    int opcion;
+
+    printf("1-Ingresar 1er operando\n");
+    printf("2-Ingresar 2do operando\n");
+    printf("3-Calcular todas las operaciones\n");
+    printf("4-Informar resultados\n");
+    printf("5-Salir\n");
+    printf("Ingrese su opcion: ");
+    scanf("%d",&opcion);
+
+    return opcion;
+}
+
+int getInt(char mensaje[])
+{
+    int numero;
+
+    printf("%s",mensaje);
+    scanf("%d",&numero);
+
+    return numero;
+}
+
 int Suma(int numeroUno,int numeroDos)
 {
     return numeroUno+numeroDos;
@@ -21,9 +46,9 @@ int Multiplicacion(int numeroUno, int numeroDos)
     return numeroUno * numeroDos;
 }
 
-int Factorial(int numero)
+double Factorial(int numero)
 {
-    int factorial = 1;
+    double factorial = 1;
     int i;
 
     if(numero == 0)
@@ -37,6 +62,5 @@ int Factorial(int numero)
             factorial*=i;
         }
     }
-
     return factorial;
 }

@@ -1,3 +1,15 @@
+/**
+* \brief Muestra un menu.
+* \return Devuelvo una opcion elegida dentro del menu
+**/
+int Menu();
+/**
+* \brief Pide un numero
+* \param El mensaje que se muestra por pantalla
+* \return El numero que se ingreso
+*
+*/
+int getInt(char mensaje[]);
 /** \brief Suma los numeros ingresados
  *
  * \param Primer numero ingresado
@@ -40,4 +52,4 @@ int Multiplicacion(int,int);
  * \return Retorna el factorial del numero
  *
  */
-int Factorial(int);
+double Factorial(int);
