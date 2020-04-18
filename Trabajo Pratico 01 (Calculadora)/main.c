@@ -7,7 +7,9 @@ int main()
     int numeroA , numeroB,opcion;
     int flagA = 0;
     int flagB = 0;
-
+    int suma, resta, multiplicacion;
+    float division;
+    double factorialA, factorialB;
 
     while(opcion != 5)
     {
@@ -40,17 +42,17 @@ int main()
                 {
                     printf("Calculando las operaciones. . . \n");
 
-                    Suma(numeroA,numeroB);
-                    Resta(numeroA,numeroB);
+                    suma = Suma(numeroA,numeroB);
+                    resta = Resta(numeroA,numeroB);
 
                     if(numeroB != 0)
                     {
-                        Division(numeroA,numeroB);
+                        division = Division(numeroA,numeroB);
                     }
 
-                    Multiplicacion(numeroA,numeroB);
-                    Factorial(numeroA);
-                    Factorial(numeroB);
+                    multiplicacion = Multiplicacion(numeroA,numeroB);
+                    factorialA= Factorial(numeroA);
+                    factorialB= Factorial(numeroB);
                 }
                 else
                 {
@@ -62,22 +64,21 @@ int main()
             case 4:
                 if(flagA == 1 && flagB == 1)
                 {
-
                     printf("Mostrando resultados.. : \n");
-                    printf("La suma de %d y %d es: %d \n",numeroA,numeroB,Suma(numeroA,numeroB));
-                    printf("La resta de %d y %d es: %d \n",numeroA,numeroB,Resta(numeroA,numeroB));
+                    printf("La suma de %d y %d es: %d \n",numeroA,numeroB,suma);
+                    printf("La resta de %d y %d es: %d \n",numeroA,numeroB,resta);
                     if(numeroB != 0)
                     {
-                        printf("La divison de %d y %d es: %f \n",numeroA,numeroB,Division(numeroA,numeroB));
+                        printf("La divison de %d y %d es: %f \n",numeroA,numeroB,division);
                     }
                     else
                     {
                         printf("No se puede dividir por 0 \n");
                     }
-                    printf("La multiplicacion de %d y %d es: %d \n",numeroA,numeroB,Multiplicacion(numeroA,numeroB));
+                    printf("La multiplicacion de %d y %d es: %d \n",numeroA,numeroB,multiplicacion);
                     if(numeroA > -1)
                     {
-                        printf("El factorial de %d es: %.0f \n",numeroA,Factorial(numeroA));
+                        printf("El factorial de %d es: %.0f \n",numeroA,factorialA);
                     }
                     else
                     {
@@ -85,7 +86,7 @@ int main()
                     }
                     if(numeroB > -1)
                     {
-                        printf("El factorial de %d es: %.0f \n",numeroB,Factorial(numeroB));
+                        printf("El factorial de %d es: %.0f \n",numeroB,factorialB);
                     }
                     else
                     {

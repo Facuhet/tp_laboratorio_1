@@ -1,6 +1,6 @@
 /**
 * \brief Muestra un menu.
-* \return Devuelvo una opcion elegida dentro del menu
+* \return Devuelve el valor de la opcion elegida dentro del menu
 **/
 int Menu();
 /**
