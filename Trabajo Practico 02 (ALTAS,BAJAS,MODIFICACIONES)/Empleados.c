@@ -1,404 +1,522 @@
-#include "Empleado.h"
-#include <string.h>
+#include "Empleados.h"
+#define VACIO 0
+#define OCUPADO 1
 
-void InicializarListado(Empleados listadoEmpleado[], int tam, int valorLibre)
+void initEmployees(Employee listado[], int tam)
 {
     int i;
-
     for(i = 0; i<tam; i++)
     {
-        listadoEmpleado[i].vacio = valorLibre;
+        listado[i].isEmpty = VACIO;
     }
 }
 
-Empleados CargarEmpleado()
-{
-    Empleados empleado;
-
-    printf("Introduce el NOMBRE: ");
-    fflush(stdin);
-    fgets(empleado.nombre,51,stdin);
-    empleado.nombre[strlen(empleado.nombre)-1] = '\0';
-
-    printf("Introduce EL APELLIDO: ");
-    fflush(stdin);
-    fgets(empleado.apellido,51,stdin);
-    empleado.apellido[strlen(empleado.apellido)-1] = '\0';
-
-    printf("Ingrese SALARIO: ");
-    scanf("%f",&empleado.salario);
-
-    printf("Ingrese SECTOR: ");
-    scanf("%d",&empleado.sector);
-
-    return empleado;
-}
-
-void MostrarEmpleado(Empleados empleado)
-{
-    printf("ID:%5d  NOMBRE:%12s APELLIDO:%12s  SALARIO:%6.3f  SECTOR:%2d \n",empleado.id,
-                                      empleado.nombre,
-                                      empleado.apellido,
-                                      empleado.salario,
-                                      empleado.sector);
-}
-
-Empleados BuscarEmpleadoPorID(Empleados listadoEmpleados[], int tam, int valorOcupado)
+int BuscarLibre(Employee listado[], int tam)
 {
     int i;
-    int auxId;
-    Empleados auxEmpleado;
-
-    printf("Ingrese el ID del empleado que busca: ");
-    scanf("%d",&auxId);
+    int indice;
 
     for(i = 0; i<tam; i++)
     {
-        if(listadoEmpleados[i].vacio == valorOcupado && listadoEmpleados[i].id == auxId)
+        indice = -1;
+
+        if(listado[i].isEmpty == VACIO)
         {
-            auxEmpleado = listadoEmpleados[i];
+            indice = i;
+            break;
         }
     }
-    return auxEmpleado;
+    return indice;
 }
 
-int CargarListadoEmpleados(Empleados listadoEmpleados[], int tam, int valorOcupado, int valorLibre)
+int BuscarOcupado(Employee listado[], int tam)
 {
     int i;
-    int valorDeRetorno = 0;
+    int valorRetorno;
 
     for(i = 0; i<tam; i++)
     {
-        if(listadoEmpleados[i].vacio == valorOcupado)
+        valorRetorno = 0;
+
+        if(listado[i].isEmpty == OCUPADO)
         {
-            continue;
+            valorRetorno = 1;
+            break;
+        }
+    }
+    return valorRetorno;
+}
+
+int AddEmployees(Employee listadoEmpleados[], int tam, char nombre[], char apellido[], float salario, int sector)
+{
+    int indiceEncontrado;
+
+    indiceEncontrado = BuscarLibre(listadoEmpleados, tam);
+
+    if(indiceEncontrado != -1)
+    {
+        if(indiceEncontrado == 0)
+        {
+            listadoEmpleados[indiceEncontrado].id = 100;
         }
         else
         {
-            if(listadoEmpleados[i].vacio == valorLibre)
-            {
-            valorDeRetorno = 1;
-            listadoEmpleados[i] = CargarEmpleado();
-            listadoEmpleados[i].id = i+100;
-            listadoEmpleados[i].vacio = valorOcupado;
-            break;
-            }
+            listadoEmpleados[indiceEncontrado].id = listadoEmpleados[indiceEncontrado-1].id;
+            listadoEmpleados[indiceEncontrado].id++;
         }
+
+        strcpy(listadoEmpleados[indiceEncontrado].name, nombre);
+        strcpy(listadoEmpleados[indiceEncontrado].lastName, apellido);
+        listadoEmpleados[indiceEncontrado].salary = salario;
+        listadoEmpleados[indiceEncontrado].sector = sector;
+        listadoEmpleados[indiceEncontrado].isEmpty = OCUPADO;
     }
 
-    return valorDeRetorno;
+
+    return indiceEncontrado;
 }
 
-int MostrarListadoEmpleados(Empleados listadoEmpleados[], int tam, int valorOcupado)
+void MostrarEmpleado(Employee miEmpleado)
+{
+    printf("ID: %2d - Apellido: %5s - Nombre: %5s - Salario: %5.3f - Sector: %2d \n", miEmpleado.id,
+                                    miEmpleado.lastName,
+                                    miEmpleado.name,
+                                    miEmpleado.salary,
+                                    miEmpleado.sector);
+}
+
+void MostrarListaEmpleados(Employee listadoEmpleados[], int tam)
 {
     int i;
-    int valorDeRetorno = 0;
 
     for(i = 0; i<tam; i++)
     {
-        if(listadoEmpleados[i].vacio == valorOcupado)
+        if(listadoEmpleados[i].isEmpty == OCUPADO)
         {
             MostrarEmpleado(listadoEmpleados[i]);
-            valorDeRetorno = 1;
         }
     }
-    return valorDeRetorno;
 }
 
-int OrdenarPorApellido_Sector(Empleados listadoEmpleados[], int tam)
+
+void OrdenarPor_Apellido_AZ_Sector(Employee listadoEmpleados[], int tam)
 {
     int i;
     int j;
-    int valorDeRetorno = 0;
-    Empleados auxEmpleado;
+    Employee auxEmpleado;
 
     for(i = 0; i<tam-1; i++)
     {
         for(j = i; j<tam; j++)
         {
-            if(strcmp(listadoEmpleados[i].apellido, listadoEmpleados[j].apellido) > 0)
+            if((strcmp(listadoEmpleados[i].lastName, listadoEmpleados[j].lastName) > 0 || strcmp(listadoEmpleados[i].lastName, listadoEmpleados[j].lastName) == 0 )&& listadoEmpleados[i].sector > listadoEmpleados[j].sector)
             {
                 auxEmpleado = listadoEmpleados[i];
                 listadoEmpleados[i] = listadoEmpleados[j];
                 listadoEmpleados[j] = auxEmpleado;
             }
-            else
-            {
-                if(strcmp(listadoEmpleados[i].apellido, listadoEmpleados[j].apellido) == 0)
-                {
-                    if(listadoEmpleados[i].sector > listadoEmpleados[j].sector)
-                    {
-                        auxEmpleado = listadoEmpleados[i];
-                        listadoEmpleados[i] = listadoEmpleados[j];
-                        listadoEmpleados[j] = auxEmpleado;
-                        valorDeRetorno = 1;
-                    }
-                }
-            }
         }
     }
-    return valorDeRetorno;
 }
 
-int ModificarEmpleados(Empleados listadoEmpleados[], int tam, int valorOcupado)
+void getString(char mensaje[], char string[])
 {
-    Empleados empleado;
+    int validacion;
 
-    empleado = BuscarEmpleadoPorID(listadoEmpleados, tam, valorOcupado);
+    do
+    {
+        printf("%s",mensaje);
+        fflush(stdin);
+        gets(string);
+
+        validacion = ValidarNombre_Apellido(string);
+
+    }while(validacion == 0);
+
+    strlwr(string);
+    string[0] = toupper(string[0]);
+
+}
+
+int ValidarNombre_Apellido(char string[])
+{
+    int i;
+
+    for(i = 0; i<strlen(string); i++)
+    {
+        if(!( (string[i] >= 65 && string[i] <= 90) || (string[i] >= 97 && string[i] <= 122) ))
+        {
+            printf("Por favor ingrese solo LETRAS y SIN ESPACIOS. \n ");
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int getSector(char mensaje[])
+{
+    char entero[3];
+    int validacion;
+    int numeroValido;
+
+    do
+    {
+        printf("%s",mensaje);
+        scanf("%s",entero);
+
+        validacion = ValidarEntero(entero);
+
+    }while(validacion == 0);
+
+    numeroValido = atoi(entero);
+
+    return numeroValido;
+}
+
+int ValidarEntero(char entero[])
+{
+    int i;
+
+    for(i = 0; i<strlen(entero); i++)
+    {
+        if(!(isdigit(entero[i])))
+        {
+            printf("Ingresa solo numeros. \n");
+            return 0;
+        }
+    }
+    return 1;
+}
+
+float getSalario(char mensaje[])
+{
+    float salario;
+
+    printf("%s",mensaje);
+    scanf("%f",&salario);
+
+    return salario;
+}
+
+int ContadorEmpleadosCargados(Employee listado[], int tam)
+{
+    int i;
+    int contador;
+
+    contador = 0;
+
+    for(i=0; i<tam; i++)
+    {
+        if(listado[i].isEmpty == OCUPADO)
+        {
+            contador++;
+        }
+    }
+
+    return contador;
+}
+
+float SumaSalario(Employee listado[], int tam)
+{
+    int i;
+    float SumaDeSalario;
+
+    SumaDeSalario = 0;
+
+    for(i=0; i<tam; i++)
+    {
+        if(listado[i].isEmpty == OCUPADO)
+        {
+            SumaDeSalario+= listado[i].salary;
+        }
+    }
+
+    return SumaDeSalario;
+}
+
+float PromedioSalario(float sumaSalario, int cantidadEmpleados)
+{
+    return sumaSalario/cantidadEmpleados;
+}
+
+
+int MostrarEmpleadoSuperiorAlPromedio(Employee listado[], int tam)
+{
+    int i;
+    int valorRetorno;
+
+    valorRetorno = 0;
+
+    float promedio;
+
+    promedio = PromedioSalario(SumaSalario(listado, tam), ContadorEmpleadosCargados(listado, tam) );
+
+    for(i=0; i<tam; i++)
+    {
+        if(listado[i].salary > promedio && listado[i].isEmpty == OCUPADO)
+        {
+            MostrarEmpleado(listado[i]);
+            valorRetorno = 1;
+        }
+    }
+    return valorRetorno;
+}
+
+int FindEmployeeById(Employee listado[], int tam)
+{
+    int i;
+    int id;
+
+    printf("\n-----------EMPLEADOS DISPONIBLES-----------\n\n");
+    MostrarListaEmpleados(listado, tam);
+    printf("\n-----------EMPLEADOS DISPONIBLES-----------\n");
+    printf("Ingrese ID del EMPLEADO: ");
+    scanf("%d",&id);
+
+    for(i=0; i<tam; i++)
+    {
+
+        if(id == listado[i].id && listado[i].isEmpty == OCUPADO)
+        {
+            printf("\nEmpleado encontrado. \n\n");
+            return i;
+            break;
+        }
+    }
+    return -1;
+}
+
+int ModifyEmployees(Employee listado[], int tam)
+{
+    int id;
     int opcion;
-    int valorDeRetorno = 0;
 
-    if(empleado.vacio == valorOcupado)
+    id = FindEmployeeById(listado, tam);
+
+    if(id == -1)
+    {
+        return id;
+    }
+    else
     {
         do
         {
-            printf("¿Que desea modificar?\n");
-            MostrarEmpleado(empleado);
-            printf("1-NOMBRE \n2-APELLIDO \n3-SALARIO \n4-SECTOR \n5-SALIR.");
+            MostrarEmpleado(listado[id]);
+            printf("Empleado encontrado.\n ¿Que desea modificar?\n");
+            printf("1-Nombre. \n");
+            printf("2-Apellido. \n");
+            printf("3-Salario. \n");
+            printf("4-Sector. \n");
+            printf("5-SALIR. \n");
+            printf("Ingrese opcion: ");
             scanf("%d",&opcion);
 
             switch(opcion)
             {
                 case 1:
-                    printf("Ingrese nuevo nombre: ");
-                    fflush(stdin);
-                    fgets(empleado.nombre,51,stdin);
-                    empleado.nombre[strlen(empleado.nombre)-1] = '\0';
-                    valorDeRetorno = 1;
+                    getString("Ingrese nuevo NOMBRE:", listado[id].name);
                 break;
 
                 case 2:
-                    printf("Ingrese nuevo apellido: ");
-                    fflush(stdin);
-                    fgets(empleado.apellido,51,stdin);
-                    empleado.apellido[strlen(empleado.apellido)-1] = '\0';
-                    valorDeRetorno = 1;
+                    getString("Ingrese nuevo APELLIDO: ",listado[id].lastName);
                 break;
 
                 case 3:
-                    printf("Ingrese nuevo salario: ");
-                    scanf("%f",&empleado.salario);
-                    valorDeRetorno = 1;
+                    listado[id].salary = (float)getSalario("Ingrese nuevo SALARIO: ");
                 break;
 
                 case 4:
-                    printf("Ingrese nuevo sector: ");
-                    scanf("%d",&empleado.sector);
-                    valorDeRetorno = 1;
+                    listado[id].sector = getSector("Ingrese nuevo SECTOR: ");
                 break;
 
                 case 5:
                 break;
             }
+
+            system("pause");
+            system("cls");
+
         }while(opcion != 5);
     }
-
-    return valorDeRetorno;
+    return 0;
 }
 
-int DarDeBajaEmpleados(Empleados listadoEmpleados[], int tam, int valorOcupado, int valorLibre)
+int RemoveEmployees(Employee listado[], int tam)
 {
-    Empleados auxEmpleado;
+    int id;
     char opcion[3];
-    int valorDeRetorno = 0;
 
-    auxEmpleado = BuscarEmpleadoPorID(listadoEmpleados, tam, valorOcupado);
+    id = FindEmployeeById(listado, tam);
 
-    if(auxEmpleado.vacio == valorOcupado)
+    if(id == -1)
     {
-        do{
-            MostrarEmpleado(auxEmpleado);
-            printf("¿Desea dar de baja a este empleado? (SI / NO): ");
-            scanf("%s",opcion);
-            strcpy(opcion, strlwr(opcion));
-
-        }while(strcmp(opcion, "si") != 0 &&strcmp(opcion, "no") != 0);
-
-        if(strcmp (opcion, "si") == 0)
+        return -1;
+    }
+    else
+    {
+        do
         {
-            for(int i = 0; i<tam; i ++)
-            {
-                if(listadoEmpleados[i].id != auxEmpleado.id)
-                {
-                    continue;
-                }
-                else
-                {
-                    listadoEmpleados[i].vacio = valorLibre;
-                    valorDeRetorno = 1;
-                }
-            }
+            printf("¿Desea dar de baja a este empleado? \n");
+            MostrarEmpleado(listado[id]);
+            printf("SI / NO \n");
+            getString("Ingrese opcion: ", opcion);
+
+        }while(strcmp(opcion, "Si") != 0 && strcmp(opcion, "No") != 0);
+
+        if(strcmp(opcion, "Si") == 0 )
+        {
+            listado[id].isEmpty = VACIO;
         }
         else
         {
-            valorDeRetorno = 2;
-        }
-
-    }
-    return valorDeRetorno;
-}
-
-int GetEmpleadoSalarioSuperior(Empleados listadoEmpleados[], int tam, int valorOcupado)
-{
-    int i;
-    int contador = 0;
-    float promedio = GetPromedioSalario(listadoEmpleados, tam, valorOcupado);
-
-    for(i = 0; i<tam; i++)
-    {
-        if(listadoEmpleados[i].salario > promedio)
-        {
-            contador++;
+            return 0;
         }
     }
-    return contador;
-}
-
-
-float TotalSalario(Empleados listadoEmpleados[], int tam, int valorOcupado)
-{
-    int i;
-    float total = 0;
-
-    for(i = 0; i<tam; i++)
-    {
-        if(listadoEmpleados[i].vacio == valorOcupado)
-        {
-            total += listadoEmpleados[i].salario;
-        }
-    }
-    return total;
-}
-
-int ContadorEmpleadosIngresados(Empleados listadoEmpleados[], int tam, int valorOcupado)
-{
-    int i;
-    int contador = 0;
-
-    for(i = 0; i<tam; i++)
-    {
-        if(listadoEmpleados[i].vacio == valorOcupado)
-        {
-            contador++;
-        }
-    }
-    return contador;
-}
-
-float GetPromedioSalario(Empleados listadoEmpleados[], int tam, int valorOcupado)
-{
-    float salarioTotal = TotalSalario(listadoEmpleados, tam, valorOcupado);
-    int cantidadEmpleados = ContadorEmpleadosIngresados(listadoEmpleados, tam, valorOcupado);
-
-    return salarioTotal/cantidadEmpleados;
+    return 1;
 }
 
 int OpcionesMenu()
 {
-    int opcion;
+    char opcion[3];
+    int opcionValidada;
+    printf("\n1.ALTAS EMPLEADO. \n");
+    printf("2.MODIFCAR EMPLEADO. \n");
+    printf("3.BAJAS EMPLEADO. \n");
+    printf("4.INFORMAR. \n");
+    printf("5.SALIR \n");
+    printf("Ingrese OPCION: ");
+    scanf("%s",opcion);
 
-    printf("1-DAR DE ALTA A UN EMPLEADO.\n");
-    printf("2-MODIFICAR EMPLEADO.\n");
-    printf("3-DAR DE BAJA A UN EMPLEADO.\n");
-    printf("4-INFORMAR. \n");
-    printf("5-SALIR.\n");
-    printf("Ingrese su opcion: ");
-    scanf("%d",&opcion);
+    ValidarEntero(opcion);
+    opcionValidada = atoi(opcion);
 
-    return opcion;
+    return opcionValidada;
 }
 
-int Menu(Empleados listadoEmpleados[], int tam, int valorOcupado, int valorLibre)
+int Menu(Employee listadoEmpleados[], int tam)
 {
     int opcion;
     int funcionRetorno;
+    char name[51];
+    char lastName[51];
+    float salario;
+    int sector;
+    int empleadoCargado;
 
-    float promedio = GetPromedioSalario(listadoEmpleados, tam, valorOcupado);
-    float totalSalario = TotalSalario(listadoEmpleados, tam, valorOcupado);
-    int empleadosMayorPromedio = GetEmpleadoSalarioSuperior(listadoEmpleados, tam, valorOcupado);
+        do
+        {
+            opcion = OpcionesMenu();
+        }while(opcion >  5 && opcion < 1);
 
-    opcion = OpcionesMenu();
 
-    switch(opcion)
-    {
-        case 1:
-            funcionRetorno = CargarListadoEmpleados(listadoEmpleados, tam, valorOcupado, valorLibre);
-            {
-                if(funcionRetorno == 1)
+
+        empleadoCargado = BuscarOcupado(listadoEmpleados, tam);
+
+        switch(opcion)
+        {
+            case 1:
+
+               funcionRetorno = BuscarLibre(listadoEmpleados, tam);
+
+               if(funcionRetorno != -1)
+               {
+                    getString("Ingrese nombre: ",name);
+                    getString("Ingrese apellido: ",lastName);
+
+                    salario = getSalario("Ingrese salario: ");
+                    sector = getSector("Ingrese sector: ");
+
+                    AddEmployees(listadoEmpleados, tam, name, lastName, salario, sector);
+               }
+               else
+               {
+                   printf("No hay espacio para cargar EMPLEADOS. \n");
+               }
+
+            break;
+
+            case 2:
+
+                if(empleadoCargado == 1)
                 {
-                    printf("EMPLEADO CARGADO CON EXITO. \n");
+                    funcionRetorno = ModifyEmployees(listadoEmpleados, tam);
+                    if(funcionRetorno == -1)
+                    {
+                        printf("No se encontro al empleado.\n");
+                    }
                 }
                 else
                 {
-                    printf("NO HAY MAS ESPACIO PARA DAR DE ALTA. \n");
+                    printf("NO HAY EMPLEADOS CARGADOS, CARGUE EMPLEADOS PRIMERO. \n");
                 }
-            }
-        break;
 
-        case 2:
-            funcionRetorno = ModificarEmpleados(listadoEmpleados, tam, valorOcupado);
-            if(funcionRetorno != 1)
-            {
-                printf("Empleado no encontrado. \n");
-            }
-            else
-            {
-                printf("Modificacion de empleado exitosa. \n");
-            }
+            break;
 
-        break;
+            case 3:
 
-        case 3:
-            funcionRetorno = DarDeBajaEmpleados(listadoEmpleados, tam, valorOcupado, valorLibre);
-            switch(funcionRetorno)
-            {
-                case 0:
-                    printf("No se encontro al empleado. \n");
-                break;
+                if(empleadoCargado == 1)
+                {
+                    funcionRetorno = RemoveEmployees(listadoEmpleados, tam);
+                    if(funcionRetorno == -1)
+                    {
+                        printf("No se encontro al empleado. \n");
+                    }
+                    else if(funcionRetorno == 0)
+                    {
+                        printf("Eliminacion cancelada. \n");
+                    }
+                    else
+                    {
+                        printf("Dado de baja con exito. \n");
+                    }
+                }
+                else
+                {
+                    printf("NO HAY EMPLEADOS CARGADOS, CARGUE EMPLEADOS PRIMERO. \n");
+                }
 
-                case 1:
-                    printf("Empleado dado de baja con exito. \n");
-                break;
+            break;
 
-                case 2:
-                    printf("Dada de baja cancelada. \n");
-                break;
-            }
-        break;
+            case 4:
 
-        case 4:
-            do
-            {
-                printf("1 - Listado de los empleados ordenados alfabeticamente por apellido y sector. \n");
-                printf("2 - Total y promedio de los salarios, y cuantos superan el salario promedio. \n");
-                printf("3 - SALIR. \n");
-                printf("Ingrese opcion: ");
-                scanf("%d",&opcion);
+                if(empleadoCargado == 1)
+                {
+                    printf("\n Listar empleados alfabeticamente por apellido y sector. \n");
+                    printf("\n Mostrar total y promedio de los salarios, empleados que superan el promedio. \n");
+                    printf("Ingrese opcion: ");
+                    scanf("%d",&opcion);
 
-            }while(opcion > 3 || opcion < 1);
+                    switch(opcion)
+                    {
+                        case 1:
+                            OrdenarPor_Apellido_AZ_Sector(listadoEmpleados, tam);
+                            MostrarListaEmpleados(listadoEmpleados, tam);
+                        break;
 
-            switch(opcion)
-            {
-                case 1:
-                    OrdenarPorApellido_Sector(listadoEmpleados, tam);
-                    funcionRetorno = MostrarListadoEmpleados(listadoEmpleados, tam, valorOcupado);
-                break;
+                        case 2:
+                            printf("Total SALARIO: %5.3f || Promedio SALARIO: %5.3f \n",SumaSalario(listadoEmpleados, tam),PromedioSalario(SumaSalario(listadoEmpleados, tam), ContadorEmpleadosCargados(listadoEmpleados, tam)));
 
-                case 2:
-                    promedio = GetPromedioSalario(listadoEmpleados, tam, valorOcupado);
-                    printf("Total de salarios: %.3f \n",totalSalario);
-                    printf("PROMEDIO: %.3f \n",promedio);
-                    printf("Empleados que superan el promedio: %d \n",empleadosMayorPromedio);
-                break;
+                            printf("\n Empleados que superan el PROMEDIO de SALARIO \n");
+                            funcionRetorno = MostrarEmpleadoSuperiorAlPromedio(listadoEmpleados, tam);
+                            if(funcionRetorno != 1)
+                            {
+                                printf("NO HAY EMPLEADOS QUE SUPEREN EL PROMEDIO. \n");
+                            }
+                        break;
+                    }
+                }
+                else
+                {
+                    printf("NO HAY EMPLEADOS CARGADOS, CARGUE EMPLEADOS PRIMERO. \n");
+                }
 
-                case 3:
-                break;
-            }
+            break;
 
-        break;
-
-        case 5:
-        break;
-    }
+            case 5:
+            break;
+        }
+    system("pause");
+    system("cls");
     return opcion;
 }
+

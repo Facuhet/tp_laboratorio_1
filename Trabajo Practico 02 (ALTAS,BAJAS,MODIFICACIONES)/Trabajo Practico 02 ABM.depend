@@ -1,0 +1,29 @@
+# depslib dependency file v1.0
+1589111387 source:c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo practico 02 abm\main.c
+	"Empleados.h"
+
+1589109580 c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo practico 02 abm\empleados.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+
+1589111075 source:c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo practico 02 abm\empleados.c
+	"Empleados.h"
+
+1589027037 c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo practico 02 abm\utn.santoro.h
+	"Empleados.h"
+	<stdio.h>
+	<stdlib.h>
+
+1589035473 source:c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo practico 02 abm\utn_santoro.c
+	"UTN_Santoro.h"
+
+1589035468 c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo practico 02 abm\utn_santoro.h
+	"Empleados.h"
+
+1589031819 c:\users\juli\desktop\progracion proyectos\clases de repaso\trabajo practico 02 abm\arrayemployees.h
+	"Empleados.h"
+	"UTN_Santoro.h"
+
