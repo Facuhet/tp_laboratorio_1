@@ -16,20 +16,31 @@ typedef struct{
 }Employee;
 
 void initEmployees(Employee [], int);
+
 int BuscarLibre(Employee [], int);
-int AddEmployees(Employee [], int, char [], char [], float, int);
+
+int AddEmployees(Employee [], int, int, char [], char [], float, int);
+
 void MostrarEmpleado(Employee);
+
 void MostrarListaEmpleados(Employee [], int);
+
 int ModifyEmployees(Employee [], int);
+
 int BuscarOcupado(Employee [], int);
 
+/****************************************************************/
+
 int OpcionesMenu();
-int Menu(Employee [], int);
+
+int Menu(void);
+
 void getString(char [], char []);
+
 int ValidarNombre_Apellido(char []);
+
 int ValidarEntero(char []);
+
 int getSector(char []);
+
 float getSalario(char []);
-
-
-

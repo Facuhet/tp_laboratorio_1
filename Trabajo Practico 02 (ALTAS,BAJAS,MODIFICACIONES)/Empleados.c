@@ -1,4 +1,5 @@
 #include "Empleados.h"
+#define CANT_ELEMENTOS 5
 #define VACIO 0
 #define OCUPADO 1
 
@@ -47,33 +48,29 @@ int BuscarOcupado(Employee listado[], int tam)
     return valorRetorno;
 }
 
-int AddEmployees(Employee listadoEmpleados[], int tam, char nombre[], char apellido[], float salario, int sector)
+int AddEmployees(Employee listadoEmpleados[], int tam, int idEmpleado, char nombre[], char apellido[], float salario, int sector)
 {
     int indiceEncontrado;
+    int todoOk = 0;
 
     indiceEncontrado = BuscarLibre(listadoEmpleados, tam);
 
     if(indiceEncontrado != -1)
     {
-        if(indiceEncontrado == 0)
-        {
-            listadoEmpleados[indiceEncontrado].id = 100;
-        }
-        else
-        {
-            listadoEmpleados[indiceEncontrado].id = listadoEmpleados[indiceEncontrado-1].id;
-            listadoEmpleados[indiceEncontrado].id++;
-        }
-
+        listadoEmpleados[indiceEncontrado].id = idEmpleado;
         strcpy(listadoEmpleados[indiceEncontrado].name, nombre);
         strcpy(listadoEmpleados[indiceEncontrado].lastName, apellido);
         listadoEmpleados[indiceEncontrado].salary = salario;
         listadoEmpleados[indiceEncontrado].sector = sector;
         listadoEmpleados[indiceEncontrado].isEmpty = OCUPADO;
+        todoOk = 1;
+    }
+    else
+    {
+        printf("NO HAY ESPACIO PARA CARGAR EMPLEADOS. \n");
     }
 
-
-    return indiceEncontrado;
+    return todoOk;
 }
 
 void MostrarEmpleado(Employee miEmpleado)
@@ -127,7 +124,8 @@ void getString(char mensaje[], char string[])
     {
         printf("%s",mensaje);
         fflush(stdin);
-        gets(string);
+        fgets(string, 51, stdin);
+        string[strlen(string)-1] = '\0';
 
         validacion = ValidarNombre_Apellido(string);
 
@@ -393,130 +391,134 @@ int OpcionesMenu()
     return opcionValidada;
 }
 
-int Menu(Employee listadoEmpleados[], int tam)
+int Menu(void)
 {
+    Employee listadoEmpleados[CANT_ELEMENTOS];
+    initEmployees(listadoEmpleados, CANT_ELEMENTOS);
+
     int opcion;
     int funcionRetorno;
+
+    int id = 100;
     char name[51];
     char lastName[51];
     float salario;
     int sector;
+
     int empleadoCargado;
 
         do
         {
             opcion = OpcionesMenu();
-        }while(opcion >  5 && opcion < 1);
 
+        empleadoCargado = BuscarOcupado(listadoEmpleados, CANT_ELEMENTOS);
 
+            switch(opcion)
+            {
+                case 1:
 
-        empleadoCargado = BuscarOcupado(listadoEmpleados, tam);
+                        getString("Ingrese nombre: ",name);
+                        getString("Ingrese apellido: ",lastName);
 
-        switch(opcion)
-        {
-            case 1:
+                        salario = getSalario("Ingrese salario: ");
+                        sector = getSector("Ingrese sector: ");
 
-               funcionRetorno = BuscarLibre(listadoEmpleados, tam);
+                        if(AddEmployees(listadoEmpleados, CANT_ELEMENTOS, id, name, lastName, salario, sector))
+                        {
+                            id++;
+                        }
+                break;
 
-               if(funcionRetorno != -1)
-               {
-                    getString("Ingrese nombre: ",name);
-                    getString("Ingrese apellido: ",lastName);
+                case 2:
 
-                    salario = getSalario("Ingrese salario: ");
-                    sector = getSector("Ingrese sector: ");
-
-                    AddEmployees(listadoEmpleados, tam, name, lastName, salario, sector);
-               }
-               else
-               {
-                   printf("No hay espacio para cargar EMPLEADOS. \n");
-               }
-
-            break;
-
-            case 2:
-
-                if(empleadoCargado == 1)
-                {
-                    funcionRetorno = ModifyEmployees(listadoEmpleados, tam);
-                    if(funcionRetorno == -1)
+                    if(empleadoCargado == 1)
                     {
-                        printf("No se encontro al empleado.\n");
-                    }
-                }
-                else
-                {
-                    printf("NO HAY EMPLEADOS CARGADOS, CARGUE EMPLEADOS PRIMERO. \n");
-                }
-
-            break;
-
-            case 3:
-
-                if(empleadoCargado == 1)
-                {
-                    funcionRetorno = RemoveEmployees(listadoEmpleados, tam);
-                    if(funcionRetorno == -1)
-                    {
-                        printf("No se encontro al empleado. \n");
-                    }
-                    else if(funcionRetorno == 0)
-                    {
-                        printf("Eliminacion cancelada. \n");
+                        funcionRetorno = ModifyEmployees(listadoEmpleados, CANT_ELEMENTOS);
+                        if(funcionRetorno == -1)
+                        {
+                            printf("No se encontro al empleado.\n");
+                        }
                     }
                     else
                     {
-                        printf("Dado de baja con exito. \n");
+                        printf("NO HAY EMPLEADOS CARGADOS, CARGUE EMPLEADOS PRIMERO. \n");
                     }
-                }
-                else
-                {
-                    printf("NO HAY EMPLEADOS CARGADOS, CARGUE EMPLEADOS PRIMERO. \n");
-                }
 
-            break;
+                break;
 
-            case 4:
+                case 3:
 
-                if(empleadoCargado == 1)
-                {
-                    printf("\n Listar empleados alfabeticamente por apellido y sector. \n");
-                    printf("\n Mostrar total y promedio de los salarios, empleados que superan el promedio. \n");
-                    printf("Ingrese opcion: ");
-                    scanf("%d",&opcion);
-
-                    switch(opcion)
+                    if(empleadoCargado == 1)
                     {
-                        case 1:
-                            OrdenarPor_Apellido_AZ_Sector(listadoEmpleados, tam);
-                            MostrarListaEmpleados(listadoEmpleados, tam);
-                        break;
-
-                        case 2:
-                            printf("Total SALARIO: %5.3f || Promedio SALARIO: %5.3f \n",SumaSalario(listadoEmpleados, tam),PromedioSalario(SumaSalario(listadoEmpleados, tam), ContadorEmpleadosCargados(listadoEmpleados, tam)));
-
-                            printf("\n Empleados que superan el PROMEDIO de SALARIO \n");
-                            funcionRetorno = MostrarEmpleadoSuperiorAlPromedio(listadoEmpleados, tam);
-                            if(funcionRetorno != 1)
-                            {
-                                printf("NO HAY EMPLEADOS QUE SUPEREN EL PROMEDIO. \n");
-                            }
-                        break;
+                        funcionRetorno = RemoveEmployees(listadoEmpleados, CANT_ELEMENTOS);
+                        if(funcionRetorno == -1)
+                        {
+                            printf("No se encontro al empleado. \n");
+                        }
+                        else if(funcionRetorno == 0)
+                        {
+                            printf("Eliminacion cancelada. \n");
+                        }
+                        else
+                        {
+                            printf("Dado de baja con exito. \n");
+                        }
                     }
-                }
-                else
-                {
-                    printf("NO HAY EMPLEADOS CARGADOS, CARGUE EMPLEADOS PRIMERO. \n");
-                }
+                    else
+                    {
+                        printf("NO HAY EMPLEADOS CARGADOS, CARGUE EMPLEADOS PRIMERO. \n");
+                    }
 
-            break;
+                break;
 
-            case 5:
-            break;
-        }
-    system("pause");
-    system("cls");
-    return opcion;
+                case 4:
+
+                    if(empleadoCargado == 1)
+                    {
+                        do
+                        {
+                            printf("\n1-Listar empleados alfabeticamente por apellido y sector. \n");
+                            printf("\n2-Mostrar total y promedio de los salarios, empleados que superan el promedio. \n");
+                            printf("Ingrese opcion: ");
+                            scanf("%d",&opcion);
+                            system("cls");
+                        }while(opcion > 2 || opcion < 1);
+
+                        switch(opcion)
+                        {
+                            case 1:
+                                OrdenarPor_Apellido_AZ_Sector(listadoEmpleados, CANT_ELEMENTOS);
+                                MostrarListaEmpleados(listadoEmpleados, CANT_ELEMENTOS);
+                            break;
+
+                            case 2:
+                                printf("Total SALARIO: %5.3f || Promedio SALARIO: %5.3f \n",SumaSalario(listadoEmpleados, CANT_ELEMENTOS),PromedioSalario(SumaSalario(listadoEmpleados, CANT_ELEMENTOS), ContadorEmpleadosCargados(listadoEmpleados, CANT_ELEMENTOS
+                                                                                                                                                                                                                                   )));
+
+                                printf("\n Empleados que superan el PROMEDIO de SALARIO \n");
+                                funcionRetorno = MostrarEmpleadoSuperiorAlPromedio(listadoEmpleados, CANT_ELEMENTOS);
+                                if(funcionRetorno != 1)
+                                {
+                                    printf("NO HAY EMPLEADOS QUE SUPEREN EL PROMEDIO. \n");
+                                }
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        printf("NO HAY EMPLEADOS CARGADOS, CARGUE EMPLEADOS PRIMERO. \n");
+                    }
+
+                break;
+
+                case 5:
+                break;
+            }
+
+            system("pause");
+            system("cls");
+        }while(opcion != 5);
+
+    return 0;
 }
 
