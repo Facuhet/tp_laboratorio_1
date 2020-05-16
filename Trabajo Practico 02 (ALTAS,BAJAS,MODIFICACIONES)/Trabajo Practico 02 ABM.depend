@@ -27,3 +27,16 @@
 	"Empleados.h"
 	"UTN_Santoro.h"
 
+1589204393 source:c:\users\juli\desktop\trabajos practicos\tp_laboratorio_1\trabajo practico 02 (altas,bajas,modificaciones)\main.c
+	"Empleados.h"
+
+1589599130 c:\users\juli\desktop\trabajos practicos\tp_laboratorio_1\trabajo practico 02 (altas,bajas,modificaciones)\empleados.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+
+1589597586 source:c:\users\juli\desktop\trabajos practicos\tp_laboratorio_1\trabajo practico 02 (altas,bajas,modificaciones)\empleados.c
+	"Empleados.h"
+

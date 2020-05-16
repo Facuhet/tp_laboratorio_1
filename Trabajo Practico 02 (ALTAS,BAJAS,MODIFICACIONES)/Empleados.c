@@ -82,7 +82,7 @@ void MostrarEmpleado(Employee miEmpleado)
                                     miEmpleado.sector);
 }
 
-void MostrarListaEmpleados(Employee listadoEmpleados[], int tam)
+int printEmployees(Employee listadoEmpleados[], int tam)
 {
     int i;
 
@@ -93,27 +93,47 @@ void MostrarListaEmpleados(Employee listadoEmpleados[], int tam)
             MostrarEmpleado(listadoEmpleados[i]);
         }
     }
+    return 0;
 }
 
 
-void OrdenarPor_Apellido_AZ_Sector(Employee listadoEmpleados[], int tam)
+int SortEmployees(Employee listadoEmpleados[], int tam,int orden)
 {
+    Employee auxEmpleado;
+    int valorRetorno;
+
     int i;
     int j;
-    Employee auxEmpleado;
-
     for(i = 0; i<tam-1; i++)
     {
+        valorRetorno = -1;
+
         for(j = i; j<tam; j++)
         {
-            if((strcmp(listadoEmpleados[i].lastName, listadoEmpleados[j].lastName) > 0 || strcmp(listadoEmpleados[i].lastName, listadoEmpleados[j].lastName) == 0 )&& listadoEmpleados[i].sector > listadoEmpleados[j].sector)
+            if(orden == 0)
             {
-                auxEmpleado = listadoEmpleados[i];
-                listadoEmpleados[i] = listadoEmpleados[j];
-                listadoEmpleados[j] = auxEmpleado;
+
+                if((strcmp(listadoEmpleados[i].lastName, listadoEmpleados[j].lastName) > 0 || strcmp(listadoEmpleados[i].lastName, listadoEmpleados[j].lastName) == 0 )&& listadoEmpleados[i].sector > listadoEmpleados[j].sector)
+                {
+                    auxEmpleado = listadoEmpleados[i];
+                    listadoEmpleados[i] = listadoEmpleados[j];
+                    listadoEmpleados[j] = auxEmpleado;
+                    valorRetorno = 1;
+                }
+            }
+            else
+            {
+                if((strcmp(listadoEmpleados[i].lastName, listadoEmpleados[j].lastName) < 0 || strcmp(listadoEmpleados[i].lastName, listadoEmpleados[j].lastName) == 0 )&& listadoEmpleados[i].sector < listadoEmpleados[j].sector)
+                {
+                    auxEmpleado = listadoEmpleados[i];
+                    listadoEmpleados[i] = listadoEmpleados[j];
+                    listadoEmpleados[j] = auxEmpleado;
+                    valorRetorno = 1;
+                }
             }
         }
     }
+    return valorRetorno;
 }
 
 void getString(char mensaje[], char string[])
@@ -151,7 +171,7 @@ int ValidarNombre_Apellido(char string[])
     return 1;
 }
 
-int getSector(char mensaje[])
+int getInt(char mensaje[])
 {
     char entero[3];
     int validacion;
@@ -186,7 +206,7 @@ int ValidarEntero(char entero[])
     return 1;
 }
 
-float getSalario(char mensaje[])
+float getFloat(char mensaje[])
 {
     float salario;
 
@@ -266,7 +286,7 @@ int FindEmployeeById(Employee listado[], int tam)
     int id;
 
     printf("\n-----------EMPLEADOS DISPONIBLES-----------\n\n");
-    MostrarListaEmpleados(listado, tam);
+    printEmployees(listado, tam);
     printf("\n-----------EMPLEADOS DISPONIBLES-----------\n");
     printf("Ingrese ID del EMPLEADO: ");
     scanf("%d",&id);
@@ -320,11 +340,11 @@ int ModifyEmployees(Employee listado[], int tam)
                 break;
 
                 case 3:
-                    listado[id].salary = (float)getSalario("Ingrese nuevo SALARIO: ");
+                    listado[id].salary = (float)getFloat("Ingrese nuevo SALARIO: ");
                 break;
 
                 case 4:
-                    listado[id].sector = getSector("Ingrese nuevo SECTOR: ");
+                    listado[id].sector = getInt("Ingrese nuevo SECTOR: ");
                 break;
 
                 case 5:
@@ -416,17 +436,21 @@ int Menu(void)
             switch(opcion)
             {
                 case 1:
+                    if(BuscarLibre(listadoEmpleados, CANT_ELEMENTOS) != -1)
+                    {
 
                         getString("Ingrese nombre: ",name);
                         getString("Ingrese apellido: ",lastName);
 
-                        salario = getSalario("Ingrese salario: ");
-                        sector = getSector("Ingrese sector: ");
+                        salario = getFloat("Ingrese salario: ");
+                        sector = getInt("Ingrese sector: ");
+                    }
 
-                        if(AddEmployees(listadoEmpleados, CANT_ELEMENTOS, id, name, lastName, salario, sector))
-                        {
-                            id++;
-                        }
+                    if(AddEmployees(listadoEmpleados, CANT_ELEMENTOS, id, name, lastName, salario, sector))
+                    {
+                        id++;
+                    }
+
                 break;
 
                 case 2:
@@ -487,8 +511,17 @@ int Menu(void)
                         switch(opcion)
                         {
                             case 1:
-                                OrdenarPor_Apellido_AZ_Sector(listadoEmpleados, CANT_ELEMENTOS);
-                                MostrarListaEmpleados(listadoEmpleados, CANT_ELEMENTOS);
+
+                                do
+                                {
+                                    printf("0 - Ordenar forma descendente. \n");
+                                    printf("1 - Ordenar forma ascendente. \n");
+                                    opcion = getInt("Ingrese opcion: ");
+                                }while(opcion != 1 && opcion != 0);
+
+                                SortEmployees(listadoEmpleados, CANT_ELEMENTOS, opcion);
+                                printEmployees(listadoEmpleados, CANT_ELEMENTOS);
+
                             break;
 
                             case 2:
